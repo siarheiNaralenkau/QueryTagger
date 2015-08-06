@@ -105,7 +105,7 @@ public class GoldenAnswerSetsServlet extends HttpServlet {
 			foldByIdResponse = rsiAdapter.getFolderById(foldByIdRequest);
 			List<FolderItem> items = foldByIdResponse.getFolder().getItemList();
 			for(int i = 0; i < items.size(); i++) {
-				String docId = items.get(i).getItemId().getId();
+				String docId = items.get(i).getItemId().getId();				
 				docId = docId.split(";")[1];
 				sbResult.append(docId);
 				if(i < items.size()-1) {

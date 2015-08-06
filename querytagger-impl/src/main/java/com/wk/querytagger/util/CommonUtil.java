@@ -1,14 +1,22 @@
 package com.wk.querytagger.util;
 
+import java.util.List;
+
+import com.wk.querytagger.adapter.RsiAdapter;
+import com.wk.querytagger.factory.RsiAdapterFactory;
 import com.wolterskluwer.services.docs.identity.Authenticate;
 import com.wolterskluwer.services.docs.identity.Logout;
 import com.wolterskluwer.services.docs.rsi.GetFolderById;
+import com.wolterskluwer.services.docs.rsi.GetFolderByIdResponse;
 import com.wolterskluwer.services.docs.rsi.GetUserFolders;
+import com.wolterskluwer.services.docs.rsi.GetUserFoldersResponse;
 import com.wolterskluwer.services.types.common.Credentials;
 import com.wolterskluwer.services.types.common.PagingInfo;
 import com.wolterskluwer.services.types.common.ProductId;
 import com.wolterskluwer.services.types.common.SecurityToken;
+import com.wolterskluwer.services.types.folder.Folder;
 import com.wolterskluwer.services.types.folder.FolderId;
+import com.wolterskluwer.services.types.folder.FolderItem;
 import com.wolterskluwer.services.types.message.ClientId;
 import com.wolterskluwer.services.types.message.ClientInfo;
 import com.wolterskluwer.services.types.message.InstanceId;
@@ -16,7 +24,9 @@ import com.wolterskluwer.services.types.message.OsaClientInfo;
 import com.wolterskluwer.services.types.message.RequestInfo;
 
 public class CommonUtil {
-	private static final String IP = "127.0.0.1";		
+	private static final String IP = "127.0.0.1";	
+	
+	private static RsiAdapter rsiAdapter = RsiAdapterFactory.getInstance().getRsiAdapter();
     
     public static Authenticate buildAuthenticateRequest(String loginId, String password) {
         Authenticate authenticate = new Authenticate();
@@ -57,6 +67,20 @@ public class CommonUtil {
     	foldById.setRequestInfo(buildRsiRequerstInfo(securityToken));    	    	
     	foldById.setFolderId(fId);    	    	
     	return foldById;
+    }
+    
+    public static List<Folder> getUserFolders(SecurityToken sToken) {
+    	GetUserFolders userFoldRequest = buildUserFoldersRequest(sToken);
+		GetUserFoldersResponse userFoldResponse = rsiAdapter.getUserFolders(userFoldRequest);
+		List<Folder> foldList = userFoldResponse.getFolders();
+		return foldList;
+    }
+    
+    public static List<FolderItem> getFolderItems(SecurityToken sToken, FolderId fId) {
+    	GetFolderById foldByIdRequest = buildFolderByIdRequest(sToken, fId);
+    	GetFolderByIdResponse foldByIdResponse = rsiAdapter.getFolderById(foldByIdRequest);
+    	List<FolderItem> items = foldByIdResponse.getFolder().getItemList();
+    	return items;
     }
     
     private static RequestInfo buildRequestInfo(SecurityToken securityToken, String sessionTicket) {

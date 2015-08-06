@@ -8,5 +8,6 @@ public class Consts {
 	
 	// JSP pages
 	public static final String JSP_MAIN = "/main.jsp";
-	public static final String JSP_ERROR = "/error.jsp";		
+	public static final String JSP_ERROR = "/error.jsp";	
+	public static final String JSP_LOGIN = "/login.jsp";
 }
