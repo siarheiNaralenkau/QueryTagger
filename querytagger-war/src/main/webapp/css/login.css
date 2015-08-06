@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+
+.page-header {
+	text-align: center;
+	font-size: 1.25em;
+	font-weight: 700;
+}
+
+.input-label {
+	width: 20%;
+	float: left;
+}
+
+.text-input {
+	width: 75%;
+	height: 25px;
+}
+
+.input-div {
+	margin-left: 20px;	
+	padding-top: 20px;
+}
+
+.submit-div {
+	width: 20%;
+	margin: 0 auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.credentials-dialog {
+	width: 30%;
+	height: 25%;
+	margin: 5% auto 0 auto;
+	background-color: #E8E8E8;
+}

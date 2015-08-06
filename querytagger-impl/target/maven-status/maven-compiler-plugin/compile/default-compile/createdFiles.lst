@@ -1,0 +1,8 @@
+com\wk\querytagger\factory\IdentityAdapterFactory.class
+com\wk\querytagger\util\CommonUtil.class
+com\wk\querytagger\adapter\IdentityIntelliconnectAdapter.class
+com\wk\querytagger\adapter\IdentityAdapter.class
+com\wk\querytagger\factory\RsiAdapterFactory.class
+com\wk\querytagger\adapter\RsiIntelliconnectAdapter.class
+com\wk\querytagger\adapter\RsiAdapter.class
+com\wk\querytagger\adapter\AuthenticationServiceAdapter.class

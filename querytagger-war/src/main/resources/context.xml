@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		">
+
+	<!-- WS binding -->
+    <import resource="classpath:/osa/client/rsi-context.xml"/>
+    <import resource="classpath:/osa/client/ws/rsi-ws-context.xml"/>
+    
+    <import resource="classpath:/osa/client/identity-context.xml"/>
+    <import resource="classpath:/osa/client/ws/identity-ws-context.xml"/>
+    
+    <!-- <import resource="classpath:/osa/server/watchdog-context.xml" /> -->
+    
+    <import resource="classpath:impl-context.xml"/>
+
+	<context:component-scan base-package="com.wk.querytagger" />
+	
+	<!--
+		Alternative way to expose the implementation to the OSA Framework. 
+		Use this if you don't want to use the @Adapter and @Component annotation.
+		To enable this you either need to:
+			* Exclude the class from component scanning in the <context:component-scan/> element above
+			* Remove the @Component annotation from the SearchImpl Class
+
+		<bean name="_rsi_wsDiagnostics" class="com.wk.querytagger.querytagger.ExampleDiagnisticsImpl">
+			<qualifier type="com.wolterskluwer.services.commons.annotations.Adapter"/>
+		</bean>
+	-->
+</beans>
