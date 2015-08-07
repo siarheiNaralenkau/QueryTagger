@@ -20,12 +20,13 @@
 				<a href="./golden_answer_sets">Golden Answer Sets</a>
 			</li>
 		</ul>
-		<!--  
-		<div class="btn-group" role="group" aria-label="...">			
-			<a class="btn btn-default" href="./query_phrases">Query Phrases</a>						
-			<a class="btn btn-default" href="./golden_answer_sets">Golden Answer Sets</a>
+		<div class="import-container">
+			<form method="post" action="./import_query_phrases" enctype="multipart/form-data">
+				<label for="importFile">Select *.xls file to import: </label>
+				<input type="file" name="importFile" id="importFile" accept="application/vnd.ms-excel"/>
+				<input type="submit" value="Upload"/>
+			</form>	
 		</div>
-		-->
 	</div>
 	
 	<script src="js/jquery-2.1.3.min.js"></script>
