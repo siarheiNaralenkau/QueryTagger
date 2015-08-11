@@ -5,6 +5,7 @@ public class Consts {
 	public static final String LOGIN = "login";
 	public static final String PASSWORD = "password";
 	public static final String ERROR_MSG = "errorMsg";
+	public static final String IMPORT_FILE = "importFile";
 	
 	// JSP pages
 	public static final String JSP_MAIN = "/main.jsp";

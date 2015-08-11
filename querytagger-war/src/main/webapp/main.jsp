@@ -21,9 +21,18 @@
 			</li>
 		</ul>
 		<div class="import-container">
+			<p>Import Query Phrases</p>
 			<form method="post" action="./import_query_phrases" enctype="multipart/form-data">
 				<label for="importFile">Select *.xls file to import: </label>
 				<input type="file" name="importFile" id="importFile" accept="application/vnd.ms-excel"/>
+				<input type="submit" value="Upload"/>
+			</form>	
+		</div>
+		<div class="import-container">
+			<p>Import Golden Answers Set</p>
+			<form method="post" action="./import_answer_sets" enctype="multipart/form-data">
+				<label for="importFile">Select *.txt file to import: </label>
+				<input type="file" name="importFile" id="importFile" accept="text/plain"/>
 				<input type="submit" value="Upload"/>
 			</form>	
 		</div>

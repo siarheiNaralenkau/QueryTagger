@@ -109,7 +109,7 @@ public class GoldenAnswerSetsServlet extends HttpServlet {
 				docId = docId.split(";")[1];
 				sbResult.append(docId);
 				if(i < items.size()-1) {
-					sbResult.append(", ");
+					sbResult.append(",");
 				}
 			}
 			sbResult.append("\r\n");

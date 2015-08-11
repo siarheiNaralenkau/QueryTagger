@@ -1,5 +1,6 @@
 package com.wk.querytagger.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import com.wk.querytagger.adapter.RsiAdapter;
 import com.wk.querytagger.factory.RsiAdapterFactory;
 import com.wolterskluwer.services.docs.identity.Authenticate;
 import com.wolterskluwer.services.docs.identity.Logout;
+import com.wolterskluwer.services.docs.rsi.AddItemsToFolder;
 import com.wolterskluwer.services.docs.rsi.CreateFolder;
 import com.wolterskluwer.services.docs.rsi.CreateFolderResponse;
 import com.wolterskluwer.services.docs.rsi.GetDocumentMetadata;
@@ -21,9 +23,11 @@ import com.wolterskluwer.services.types.common.ProductId;
 import com.wolterskluwer.services.types.common.SecurityToken;
 import com.wolterskluwer.services.types.documents.DocumentId;
 import com.wolterskluwer.services.types.documents.DocumentMetadata;
+import com.wolterskluwer.services.types.folder.DocFolderItem;
 import com.wolterskluwer.services.types.folder.Folder;
 import com.wolterskluwer.services.types.folder.FolderId;
 import com.wolterskluwer.services.types.folder.FolderItem;
+import com.wolterskluwer.services.types.folder.ItemInfo;
 import com.wolterskluwer.services.types.message.ClientId;
 import com.wolterskluwer.services.types.message.ClientInfo;
 import com.wolterskluwer.services.types.message.InstanceId;
@@ -77,7 +81,7 @@ public class CommonUtil {
     }
     
     public static GetDocumentMetadata buildDocumentMetadataRequest(SecurityToken sToken, DocumentId docId) {
-    	GetDocumentMetadata docMetaReq = new GetDocumentMetadata();
+    	GetDocumentMetadata docMetaReq = new GetDocumentMetadata();    	
     	docMetaReq.setDocId(docId);
     	docMetaReq.setRequestInfo(buildRsiRequerstInfo(sToken));
     	return docMetaReq;
@@ -100,7 +104,7 @@ public class CommonUtil {
     public static DocumentMetadata getDocMeta(SecurityToken sToken, DocumentId docId) {
     	GetDocumentMetadata docMetaReq = buildDocumentMetadataRequest(sToken, docId);
     	GetDocumentMetadataResponse docMetaRes = rsiAdapter.getDocumentMeta(docMetaReq);
-    	DocumentMetadata docMeta = docMetaRes.getMetadata();
+    	DocumentMetadata docMeta = docMetaRes.getMetadata();    	
     	return docMeta;
     }
     
@@ -108,8 +112,27 @@ public class CommonUtil {
     	for(String folderName : docToImport.keySet()) {
     		CreateFolder createFolderReq = buildCreateFolderRequest(sToken, folderName);
     		CreateFolderResponse response = rsiAdapter.createFolder(createFolderReq);
-    		System.out.println(response.getFolder().getFolderMetadata().getTitle());
+    		// Adding document items to newly created folder.  
+    		List<ItemInfo> documentsList = new ArrayList<ItemInfo>();
+    		for(String documentId : docToImport.get(folderName)) {
+    			ItemInfo itemInfo = new ItemInfo();
+    			DocFolderItem docItem = new DocFolderItem();
+    			DocumentId docId = new DocumentId();
+    			docId.setDocumentIdentifier(documentId);
+    			docItem.setDocId(docId);
+    			itemInfo.setDocumentFolderItem(docItem);
+    			documentsList.add(itemInfo);
+    		}
+    		addDocumentsToFolder(sToken, response.getFolder().getFolderMetadata().getFolderId(), documentsList);    		
     	}
+    }
+    
+    public static void addDocumentsToFolder(SecurityToken sToken, FolderId folderId, List<ItemInfo> items) {    	
+    	AddItemsToFolder addItemsReq = new AddItemsToFolder();    	
+    	addItemsReq.setRequestInfo(buildRsiRequerstInfo(sToken));
+    	addItemsReq.setFolderId(folderId); 
+    	addItemsReq.getItems().addAll(items);
+    	rsiAdapter.addItemsToFolder(addItemsReq);    	
     }
     
     private static CreateFolder buildCreateFolderRequest(SecurityToken sToken, String folderName) {
@@ -163,6 +186,8 @@ public class CommonUtil {
     	rInfo.setProductId(productId);
     	
     	rInfo.setNoCache(true);
+    	
+    	
     	
     	return rInfo;
     }       

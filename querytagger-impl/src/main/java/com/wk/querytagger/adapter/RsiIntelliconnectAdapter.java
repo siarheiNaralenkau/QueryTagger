@@ -114,9 +114,23 @@ public class RsiIntelliconnectAdapter implements RsiAdapter {
 	}
 
 	@Override
-	public AddItemsToFolderResponse addItemsToFolder(AddItemsToFolder AddItemsReq) {
-		AddItemsToFolderResponse response = null;
-		// TODO implement add items to folder API.		
+	public AddItemsToFolderResponse addItemsToFolder(AddItemsToFolder addItemsReq) {
+		AddItemsToFolderResponse response = null;	
+		FolderClient foldClient = RsiWebServiceClientFactory.getInstance().getFolderClient();		
+		try {
+			response = foldClient.addItemsToFolder(addItemsReq);
+		} catch (MaxFolderItemsExceededFault e) {
+			e.printStackTrace();
+		} catch (MissingProductFault e) {
+			e.printStackTrace();
+		} catch (CommonClientFault e) {
+			e.printStackTrace();
+		} catch (InvalidIdFault e) {
+			e.printStackTrace();
+		} catch (InvalidProductFault e) {
+			e.printStackTrace();
+		}
+
 		return response;
 	}
 
