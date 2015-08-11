@@ -1,6 +1,0 @@
-com\wk\querytagger\servlets\GetUserFoldersServlet.class
-com\wk\querytagger\servlets\LoginServlet.class
-com\wk\querytagger\servlets\ImportQueryPhrasesServlet.class
-com\wk\querytagger\consts\Consts.class
-com\wk\querytagger\servlets\GoldenAnswerSetsServlet.class
-com\wk\querytagger\servlets\QueryPhrasesServlet.class
