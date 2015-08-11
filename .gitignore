@@ -1,3 +1,8 @@
 *.class
 
 *.jar
+.settings
+/querytagger-impl/*.classpath
+/querytagger-impl/*.project
+/querytagger-war/*.classpath
+/querytagger-war/*.project
