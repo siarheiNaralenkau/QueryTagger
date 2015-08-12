@@ -57,10 +57,11 @@ public class XLSUtil {
 				DocumentId docId = new DocumentId();
 				docId.setDocumentIdentifier(documentId);
 				DocumentMetadata docMeta = CommonUtil.getDocMeta(sToken, docId);
-				String pubvol = docMeta.getSubTitle();
+//				String pubvol = docMeta.getSubTitle();
 				
 				Cell pubvolCell = docRow.createCell(3);
-				pubvolCell.setCellValue(pubvol);
+				CommonUtil.getDocExtendedMeta(sToken, docId);
+//				pubvolCell.setCellValue(pubvol);
 				
 				Cell dateInsCell = docRow.createCell(4);
 				XMLGregorianCalendar dateInserted = fItem.getAddDateTime();

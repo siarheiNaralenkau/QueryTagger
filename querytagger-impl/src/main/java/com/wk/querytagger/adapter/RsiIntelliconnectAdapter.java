@@ -1,5 +1,7 @@
 package com.wk.querytagger.adapter;
 
+import java.util.List;
+
 import com.wolterskluwer.services.bindings.rsi.client.DocumentClient;
 import com.wolterskluwer.services.bindings.rsi.client.FolderClient;
 import com.wolterskluwer.services.bindings.rsi.client.ws.RsiWebServiceClientFactory;
@@ -15,6 +17,8 @@ import com.wolterskluwer.services.docs.rsi.CreateFolder;
 import com.wolterskluwer.services.docs.rsi.CreateFolderResponse;
 import com.wolterskluwer.services.docs.rsi.GetDocumentMetadata;
 import com.wolterskluwer.services.docs.rsi.GetDocumentMetadataResponse;
+import com.wolterskluwer.services.docs.rsi.GetExtendedMetadataForDocuments;
+import com.wolterskluwer.services.docs.rsi.GetExtendedMetadataForDocumentsResponse;
 import com.wolterskluwer.services.docs.rsi.GetFolderById;
 import com.wolterskluwer.services.docs.rsi.GetFolderByIdResponse;
 import com.wolterskluwer.services.docs.rsi.GetUserFolders;
@@ -23,6 +27,7 @@ import com.wolterskluwer.services.rsi.DocumentNotInWorkspaceFault;
 import com.wolterskluwer.services.rsi.Folder;
 import com.wolterskluwer.services.rsi.MaxFolderItemsExceededFault;
 import com.wolterskluwer.services.rsi.MaxFoldersExceededFault;
+import com.wolterskluwer.services.types.documents.ExtendedDocumentMetadata;
 
 public class RsiIntelliconnectAdapter implements RsiAdapter {
 	private Folder foldersClient;
@@ -131,6 +136,26 @@ public class RsiIntelliconnectAdapter implements RsiAdapter {
 			e.printStackTrace();
 		}
 
+		return response;
+	}
+
+	@Override
+	public GetExtendedMetadataForDocumentsResponse getDocExtendedMeta(GetExtendedMetadataForDocuments extMetaRequest) {
+		GetExtendedMetadataForDocumentsResponse response = null;
+		DocumentClient docClient = RsiWebServiceClientFactory.getInstance().getDocumentClient();		
+		try {
+			response = docClient.getExtendedMetadataForDocuments(extMetaRequest);
+		} catch (MissingProductFault e) {			
+			e.printStackTrace();
+		} catch (CommonClientFault e) {			
+			e.printStackTrace();
+		} catch (NotAuthorizedFault e) {
+			e.printStackTrace();
+		} catch (InvalidIdFault e) {
+			e.printStackTrace();
+		} catch (InvalidProductFault e) {
+			e.printStackTrace();
+		}		
 		return response;
 	}
 

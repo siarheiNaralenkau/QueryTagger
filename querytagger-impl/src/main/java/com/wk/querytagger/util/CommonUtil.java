@@ -1,6 +1,7 @@
 package com.wk.querytagger.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import com.wolterskluwer.services.docs.rsi.CreateFolder;
 import com.wolterskluwer.services.docs.rsi.CreateFolderResponse;
 import com.wolterskluwer.services.docs.rsi.GetDocumentMetadata;
 import com.wolterskluwer.services.docs.rsi.GetDocumentMetadataResponse;
+import com.wolterskluwer.services.docs.rsi.GetExtendedMetadataForDocuments;
+import com.wolterskluwer.services.docs.rsi.GetExtendedMetadataForDocumentsResponse;
 import com.wolterskluwer.services.docs.rsi.GetFolderById;
 import com.wolterskluwer.services.docs.rsi.GetFolderByIdResponse;
 import com.wolterskluwer.services.docs.rsi.GetUserFolders;
@@ -23,6 +26,7 @@ import com.wolterskluwer.services.types.common.ProductId;
 import com.wolterskluwer.services.types.common.SecurityToken;
 import com.wolterskluwer.services.types.documents.DocumentId;
 import com.wolterskluwer.services.types.documents.DocumentMetadata;
+import com.wolterskluwer.services.types.documents.ExtendedDocumentMetadata;
 import com.wolterskluwer.services.types.folder.DocFolderItem;
 import com.wolterskluwer.services.types.folder.Folder;
 import com.wolterskluwer.services.types.folder.FolderId;
@@ -109,9 +113,21 @@ public class CommonUtil {
     }
     
     public static void importDocuments(SecurityToken sToken, Map<String, List<String>> docToImport) {
+    	List<Folder> existingFolders = getUserFolders(sToken);
+    	Map<String, FolderId> existingFolderIds = new HashMap<String, FolderId>();
+    	for(Folder fold : existingFolders) {
+    		existingFolderIds.put(fold.getFolderMetadata().getTitle(), fold.getFolderMetadata().getFolderId());
+    	}
+    	
     	for(String folderName : docToImport.keySet()) {
-    		CreateFolder createFolderReq = buildCreateFolderRequest(sToken, folderName);
-    		CreateFolderResponse response = rsiAdapter.createFolder(createFolderReq);
+    		FolderId folderId;
+    		if(!existingFolderIds.containsKey(folderName)) {    			    		
+    			CreateFolder createFolderReq = buildCreateFolderRequest(sToken, folderName);
+    			CreateFolderResponse response = rsiAdapter.createFolder(createFolderReq);
+    			folderId = response.getFolder().getFolderMetadata().getFolderId();
+    		} else {
+    			folderId = existingFolderIds.get(folderName);
+    		}
     		// Adding document items to newly created folder.  
     		List<ItemInfo> documentsList = new ArrayList<ItemInfo>();
     		for(String documentId : docToImport.get(folderName)) {
@@ -123,7 +139,7 @@ public class CommonUtil {
     			itemInfo.setDocumentFolderItem(docItem);
     			documentsList.add(itemInfo);
     		}
-    		addDocumentsToFolder(sToken, response.getFolder().getFolderMetadata().getFolderId(), documentsList);    		
+    		addDocumentsToFolder(sToken, folderId, documentsList);    		
     	}
     }
     
@@ -135,9 +151,20 @@ public class CommonUtil {
     	rsiAdapter.addItemsToFolder(addItemsReq);    	
     }
     
+    public static void getDocExtendedMeta(SecurityToken sToken, DocumentId docId) {
+    	GetExtendedMetadataForDocuments extMetaReq = new GetExtendedMetadataForDocuments();
+    	extMetaReq.setRequestInfo(buildMetadataRequestInfo(sToken));
+    	extMetaReq.getDocIds().add(docId);
+    	extMetaReq.getExtendedFields().add("da-id");
+    	extMetaReq.getExtendedFields().add("pubvol");
+    	GetExtendedMetadataForDocumentsResponse extMetaResp = rsiAdapter.getDocExtendedMeta(extMetaReq);
+    	List<ExtendedDocumentMetadata> extMetaList = extMetaResp.getMetadata();
+    	System.out.println("Extended metadata received!");
+    }
+    
     private static CreateFolder buildCreateFolderRequest(SecurityToken sToken, String folderName) {
     	CreateFolder createFolderReq = new CreateFolder();
-    	createFolderReq.setTitle(folderName);
+    	createFolderReq.setTitle(folderName);    	
     	createFolderReq.setRequestInfo(buildRsiRequerstInfo(sToken));
     	return createFolderReq;
     }
@@ -183,13 +210,36 @@ public class CommonUtil {
     	
     	ProductId productId = new ProductId();
     	productId.setId("SOLR-TAA-IC");
-    	rInfo.setProductId(productId);
-    	
-    	rInfo.setNoCache(true);
-    	
-    	
-    	
+    	rInfo.setProductId(productId);    	
+    	rInfo.setNoCache(true);    	    	
     	return rInfo;
     }       
+    
+    private static RequestInfo buildMetadataRequestInfo(SecurityToken sToken) {
+    	RequestInfo rInfo = new RequestInfo();
+    	
+    	// Create client info params    	
+    	OsaClientInfo clientInfo = new OsaClientInfo();
+    	
+    	ClientId clientId = new ClientId();
+    	clientId.setId("testframework");
+    	clientInfo.setClientId(clientId);
+    	
+    	InstanceId instanceId = new InstanceId();
+    	instanceId.setId("1");
+    	clientInfo.setInstanceId(instanceId);
+    	
+    	clientInfo.setOriginIp("127.0.0.1");
+    	clientInfo.setOsaSuiteVersion("local");
+    	rInfo.setClientInfo(clientInfo);
+    	
+    	ProductId productId = new ProductId();
+    	productId.setId("SOLR-TAA-IC");
+    	rInfo.setProductId(productId);
+    	
+    	rInfo.setSecurityToken(sToken);
+    	    	
+    	return rInfo;
+    }
 
 }
